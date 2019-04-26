@@ -1,0 +1,46 @@
+package kz.ya.FeedReader.rss;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import kz.ya.FeedReader.model.FeedItem;
+import kz.ya.FeedReader.repo.FeedItemRepository;
+import kz.ya.FeedReader.service.FeedExtractor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+/**
+ *
+ * @author yerlana
+ */
+@Component
+public class RssFeedTask {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(RssFeedTask.class);
+    
+    @Value("${rss.feed.url}")
+    private String feedUrl;
+    
+    private final FeedExtractor feedExtractor;
+    private final FeedItemRepository repository;
+
+    @Autowired
+    public RssFeedTask(FeedExtractor feedExtractor, FeedItemRepository repository) {
+        this.feedExtractor = feedExtractor;
+        this.repository = repository;
+    }
+
+    @Scheduled(fixedRate = 5000)
+    public void fetchRssFeed() {
+        LOG.info("Fetching from RSS Feed {}", feedUrl);
+        List<FeedItem> items = feedExtractor.extractItems(feedUrl);
+        LOG.info("Fetch result got {} items", items.size());
+        items.forEach((entry) -> {
+            repository.save(entry);
+        });
+    }
+}
