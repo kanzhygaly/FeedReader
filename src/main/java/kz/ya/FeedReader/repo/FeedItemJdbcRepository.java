@@ -91,7 +91,7 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
             parameters.put("pubDate", entity.getPubDate());
 
             Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
-            LOGGER.info("New FeedItem: " + newId);
+            LOGGER.debug("New FeedItem: " + newId);
 
             return findById((Long) newId).get();
         }

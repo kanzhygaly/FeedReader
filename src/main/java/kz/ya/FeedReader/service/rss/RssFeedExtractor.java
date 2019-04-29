@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kz.ya.FeedReader.service;
+package kz.ya.FeedReader.service.rss;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import kz.ya.FeedReader.model.FeedItem;
+import kz.ya.FeedReader.service.FeedExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -49,14 +50,14 @@ public class RssFeedExtractor implements FeedExtractor {
         if (syndFeed == null) {
             throw new RuntimeException("Error getting feed from " + feedUrl);
         }
+        System.out.println(syndFeed.getEntries().size());
 
         // populate the result list
         syndFeed.getEntries().forEach((entry) -> {
             System.out.println(entry.getAuthor());
-            System.out.println(entry.getDescription());
-            System.out.println(entry.getUpdatedDate());
-            System.out.println(entry.getUri());
-            System.out.println(entry.getContents().get(0).getValue());
+            System.out.println(entry.getLink());
+            System.out.println(entry.getUpdatedDate().toString());
+            System.out.println(entry.getDescription().getValue());
             result.add(new FeedItem(entry.getTitle(), entry.getLink(), entry.getPublishedDate()));
         });
         

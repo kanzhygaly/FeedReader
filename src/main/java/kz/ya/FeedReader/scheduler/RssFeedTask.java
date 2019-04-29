@@ -1,7 +1,5 @@
-package kz.ya.FeedReader.rss;
+package kz.ya.FeedReader.scheduler;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import kz.ya.FeedReader.model.FeedItem;
 import kz.ya.FeedReader.repo.FeedItemRepository;
@@ -34,7 +32,8 @@ public class RssFeedTask {
         this.repository = repository;
     }
 
-    @Scheduled(fixedRate = 5000)
+    // Scheduled to be invoked every 180 sec
+    @Scheduled(fixedRate = 180000)
     public void fetchRssFeed() {
         LOG.info("Fetching from RSS Feed {}", feedUrl);
         List<FeedItem> items = feedExtractor.extractItems(feedUrl);
