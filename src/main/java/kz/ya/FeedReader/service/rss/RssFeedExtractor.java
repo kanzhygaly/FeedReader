@@ -10,6 +10,7 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import kz.ya.FeedReader.model.FeedItem;
@@ -54,9 +55,9 @@ public class RssFeedExtractor implements FeedExtractor {
 
         // populate the result list
         syndFeed.getEntries().forEach((entry) -> {
+            System.out.println(entry.getPublishedDate());
             System.out.println(entry.getAuthor());
             System.out.println(entry.getLink());
-            System.out.println(entry.getUpdatedDate().toString());
             System.out.println(entry.getDescription().getValue());
             result.add(new FeedItem(entry.getTitle(), entry.getLink(), entry.getPublishedDate()));
         });
