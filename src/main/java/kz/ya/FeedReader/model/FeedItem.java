@@ -28,6 +28,13 @@ public class FeedItem {
         this.pubDate = pubDate;
     }
 
+    public FeedItem(Long id, String title, String link, Date pubDate) {
+        this.id = id;
+        this.title = title;
+        this.link = link;
+        this.pubDate = pubDate;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -96,7 +103,7 @@ public class FeedItem {
 
     @Override
     public String toString() {
-        return String.format("FeedItem [id=%d, title=%s, link=%s, pubDate=%t]",
+        return String.format("FeedItem [id=%d, title=%s, link=%s, pubDate=%s]",
                 id, title, link, pubDate);
     }
 }

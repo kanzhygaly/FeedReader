@@ -10,7 +10,6 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import java.io.IOException;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import kz.ya.FeedReader.model.FeedItem;
@@ -36,8 +35,6 @@ public class RssFeedExtractor implements FeedExtractor {
 
     @Override
     public List<FeedItem> extractItems(String feedUrl) {
-        List<FeedItem> result = new LinkedList<>();
-
         // fetch RSS feed by the given feedUrl
         SyndFeed syndFeed = restTemplate.execute(feedUrl, HttpMethod.GET, null, response -> {
             SyndFeedInput input = new SyndFeedInput();
@@ -51,7 +48,9 @@ public class RssFeedExtractor implements FeedExtractor {
         if (syndFeed == null) {
             throw new RuntimeException("Error getting feed from " + feedUrl);
         }
+        
         System.out.println(syndFeed.getEntries().size());
+        List<FeedItem> result = new LinkedList<>();
 
         // populate the result list
         syndFeed.getEntries().forEach((entry) -> {

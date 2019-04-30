@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * JDBC implementation of FeedItemRepository Interface
  */
 package kz.ya.FeedReader.repo;
 
@@ -9,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import kz.ya.FeedReader.exception.FeedItemNotFoundException;
 import kz.ya.FeedReader.model.FeedItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
     @Autowired
     public FeedItemJdbcRepository(JdbcTemplate jdbcTemplate) {
         Assert.notNull(jdbcTemplate, "JdbcTemplate must not be null!");
-        
+
         this.jdbcTemplate = jdbcTemplate;
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME).usingGeneratedKeyColumns("id");
@@ -47,6 +46,17 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
     public long count() {
         String query = String.format("SELECT COUNT(*) FROM %s", TABLE_NAME);
         return jdbcTemplate.queryForObject(query, Long.class);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Assert.notNull(id, ID_MUST_NOT_BE_NULL);
+        
+        findById(id).orElseThrow(() -> new FeedItemNotFoundException(id));
+
+        String query = String.format("DELETE FROM %s WHERE id = %d", TABLE_NAME, id);
+        int rows = jdbcTemplate.update(query);
+        LOGGER.info("Rows deleted: " + rows);
     }
 
     @Override
@@ -73,8 +83,7 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         Assert.notNull(id, ID_MUST_NOT_BE_NULL);
 
         String query = String.format("SELECT * FROM %s WHERE id = %d", TABLE_NAME, id);
-        FeedItem result = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(FeedItem.class)
-        );
+        FeedItem result = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(FeedItem.class));
 
         return Optional.ofNullable(result);
     }
@@ -97,17 +106,10 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         }
 
         // else UPDATE it
-        int rowsUpdated = jdbcTemplate.update("UPDATE " + TABLE_NAME + " SET title = ?, link = ?, pub_date = ? WHERE id = ?",
+        int rows = jdbcTemplate.update("UPDATE " + TABLE_NAME + " SET title = ?, link = ?, pub_date = ? WHERE id = ?",
                 entity.getTitle(), entity.getLink(), entity.getPubDate(), entity.getId());
-        LOGGER.info("Rows updated: " + rowsUpdated);
+        LOGGER.info("Rows updated: " + rows);
 
         return findById(entity.getId()).get();
-    }
-
-    @Override
-    public List<FeedItem> saveAll(List<FeedItem> entities) {
-        Assert.notNull(entities, "The given List of entities must not be null!");
-        
-        return null;
     }
 }

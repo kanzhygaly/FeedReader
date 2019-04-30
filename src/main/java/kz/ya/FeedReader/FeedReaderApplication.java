@@ -1,3 +1,6 @@
+/*
+ * Main class of the application
+ */
 package kz.ya.FeedReader;
 
 import org.springframework.boot.SpringApplication;
@@ -19,7 +22,7 @@ public class FeedReaderApplication {
     public static void main(String[] args) {
         SpringApplication.run(FeedReaderApplication.class, args);
     }
-
+    
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

@@ -4,9 +4,9 @@
  */
 
 CREATE TABLE IF NOT EXISTS feed_item (
-   id bigint(20) NOT NULL AUTO_INCREMENT,
-   title varchar(255) not null,
-   link varchar(255) not null,
-   pub_date date,
+   id BIGINT(20) NOT NULL AUTO_INCREMENT,
+   title VARCHAR(255) NOT NULL,
+   link varchar(255) NOT NULL,
+   pub_date TIMESTAMP,
    primary key(id)
 );
