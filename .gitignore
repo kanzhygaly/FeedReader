@@ -17,6 +17,7 @@
 *.ipr
 
 ### NetBeans ###
+nbactions.xml
 /nbproject/private/
 /build/
 /nbbuild/
