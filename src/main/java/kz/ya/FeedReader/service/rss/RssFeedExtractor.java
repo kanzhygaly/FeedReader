@@ -9,15 +9,16 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 import kz.ya.FeedReader.model.FeedItem;
 import kz.ya.FeedReader.service.FeedExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -48,17 +49,14 @@ public class RssFeedExtractor implements FeedExtractor {
         if (syndFeed == null) {
             throw new RuntimeException("Error getting feed from " + feedUrl);
         }
-        
-        System.out.println(syndFeed.getEntries().size());
+
         List<FeedItem> result = new LinkedList<>();
 
         // populate the result list
         syndFeed.getEntries().forEach((entry) -> {
-            System.out.println(entry.getPublishedDate());
-            System.out.println(entry.getAuthor());
-            System.out.println(entry.getLink());
-            System.out.println(entry.getDescription().getValue());
-            result.add(new FeedItem(entry.getTitle(), entry.getLink(), entry.getPublishedDate()));
+            FeedItem item = new FeedItem(entry.getAuthor(), entry.getTitle(), entry.getLink(), entry.getPublishedDate());
+            item.setDescription(entry.getDescription().getValue());
+            result.add(item);
         });
         
         return result;

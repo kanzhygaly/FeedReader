@@ -15,32 +15,44 @@ import java.util.Objects;
 public class FeedItem {
     
     private Long id;
+    private String author;
     private String title;
+    private String description;
     private String link;
     private Date pubDate;
 
     public FeedItem() {
     }
 
-    public FeedItem(String title, String link, Date pubDate) {
+    public FeedItem(String author, String title, String link, Date pubDate) {
+        this.author = author;
         this.title = title;
         this.link = link;
         this.pubDate = pubDate;
     }
 
-    public FeedItem(Long id, String title, String link, Date pubDate) {
+    public FeedItem(Long id, String author, String title, String link, Date pubDate) {
         this.id = id;
+        this.author = author;
         this.title = title;
         this.link = link;
         this.pubDate = pubDate;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getTitle() {
@@ -49,6 +61,14 @@ public class FeedItem {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLink() {
@@ -68,37 +88,20 @@ public class FeedItem {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
-        hash = 97 * hash + Objects.hashCode(this.title);
-        hash = 97 * hash + Objects.hashCode(this.link);
-        hash = 97 * hash + Objects.hashCode(this.pubDate);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedItem feedItem = (FeedItem) o;
+        return Objects.equals(id, feedItem.id) &&
+                Objects.equals(author, feedItem.author) &&
+                Objects.equals(title, feedItem.title) &&
+                Objects.equals(link, feedItem.link) &&
+                Objects.equals(pubDate, feedItem.pubDate);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FeedItem other = (FeedItem) obj;
-        if (!Objects.equals(this.title, other.title)) {
-            return false;
-        }
-        if (!Objects.equals(this.link, other.link)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return Objects.equals(this.pubDate, other.pubDate);
+    public int hashCode() {
+        return Objects.hash(id, author, title, link, pubDate);
     }
 
     @Override

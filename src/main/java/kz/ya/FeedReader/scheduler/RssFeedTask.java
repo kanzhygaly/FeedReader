@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RssFeedTask {
     
-    private static final Logger LOG = LoggerFactory.getLogger(RssFeedTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RssFeedTask.class);
     
     @Value("${rss.feed.url}")
     private String feedUrl;
@@ -35,9 +35,9 @@ public class RssFeedTask {
     // Scheduled to be invoked every 180 sec
     @Scheduled(fixedRate = 180000)
     public void fetchRssFeed() {
-        LOG.info("Fetching from RSS Feed {}", feedUrl);
+        LOGGER.info("Fetching from RSS Feed {}", feedUrl);
         List<FeedItem> items = feedExtractor.extractItems(feedUrl);
-        LOG.info("Fetch result got {} items", items.size());
+        LOGGER.info("Fetch result got {} items", items.size());
         items.forEach((entry) -> {
             repository.save(entry);
         });

@@ -12,6 +12,7 @@ import kz.ya.FeedReader.model.FeedItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -74,7 +75,7 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
             throw new IllegalArgumentException("The given 'numOfEntries' must not be less than ZERO!");
         }
 
-        String query = String.format("SELECT * FROM %s ORDER BY pubDate DESC LIMIT %d", TABLE_NAME, numOfEntries);
+        String query = String.format("SELECT * FROM %s ORDER BY pub_date DESC LIMIT %d", TABLE_NAME, numOfEntries);
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(FeedItem.class));
     }
 
@@ -83,21 +84,34 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         Assert.notNull(id, ID_MUST_NOT_BE_NULL);
 
         String query = String.format("SELECT * FROM %s WHERE id = %d", TABLE_NAME, id);
-        FeedItem result = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(FeedItem.class));
 
-        return Optional.ofNullable(result);
+        FeedItem result;
+        try {
+            result = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(FeedItem.class));
+        } catch (EmptyResultDataAccessException ex) {
+            // Incorrect result size: expected 1, actual 0
+            return Optional.empty();
+        }
+
+        return Optional.of(result);
     }
 
     @Override
     public FeedItem save(FeedItem entity) {
         Assert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);
+        Assert.notNull(entity.getAuthor(), "The given 'author' must not be NULL!");
+        Assert.notNull(entity.getTitle(), "The given 'title' must not be NULL!");
+        Assert.notNull(entity.getLink(), "The given 'link' must not be NULL!");
+        Assert.notNull(entity.getPubDate(), "The given 'pub_date' must not be NULL!");
 
         // if entity is New, then INSERT it
         if (entity.getId() == null) {
             Map<String, Object> parameters = new HashMap<>(1);
+            parameters.put("author", entity.getAuthor());
             parameters.put("title", entity.getTitle());
+            parameters.put("description", entity.getDescription());
             parameters.put("link", entity.getLink());
-            parameters.put("pubDate", entity.getPubDate());
+            parameters.put("pub_date", entity.getPubDate());
 
             Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
             LOGGER.debug("New FeedItem: " + newId);
@@ -106,8 +120,9 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         }
 
         // else UPDATE it
-        int rows = jdbcTemplate.update("UPDATE " + TABLE_NAME + " SET title = ?, link = ?, pub_date = ? WHERE id = ?",
-                entity.getTitle(), entity.getLink(), entity.getPubDate(), entity.getId());
+        int rows = jdbcTemplate.update("UPDATE " + TABLE_NAME +
+                        " SET author = ?, title = ?, description = ?, link = ?, pub_date = ? WHERE id = ?",
+                entity.getAuthor(), entity.getTitle(), entity.getDescription(), entity.getLink(), entity.getPubDate(), entity.getId());
         LOGGER.info("Rows updated: " + rows);
 
         return findById(entity.getId()).get();
