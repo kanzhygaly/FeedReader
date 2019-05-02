@@ -35,10 +35,7 @@ JAR Run
 java -jar target/FeedReader-1.0.jar
 ```
 
-Application starts on 
-```sh 
-http://localhost:8080/
-```
+Application starts on http://localhost:8080/
 
 H2 Console http://localhost:8080/h2-console
 ```sh
@@ -47,7 +44,7 @@ User Name: sa
 Password:
 ```
 
-RSS Feed URL
+Default RSS Feed URL
 ```sh
 File "application.properties"
 Property "rss.feed.url"
