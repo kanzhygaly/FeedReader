@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * General Feed Extractor Interface
  */
 package kz.ya.FeedReader.service;
 

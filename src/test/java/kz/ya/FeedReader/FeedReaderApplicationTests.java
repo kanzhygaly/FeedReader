@@ -1,3 +1,6 @@
+/**
+ * Main Application tests
+ */
 package kz.ya.FeedReader;
 
 import org.junit.Test;

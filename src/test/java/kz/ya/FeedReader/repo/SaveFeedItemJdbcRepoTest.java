@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * FeedItemJdbcRepository tests for save method (create/update)
  */
 package kz.ya.FeedReader.repo;
 
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
-import java.util.Optional;
 
 /**
  *
@@ -22,32 +19,14 @@ import java.util.Optional;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class FeedItemJdbcRepositoryTest {
+public class SaveFeedItemJdbcRepoTest {
 
     @Autowired
     private FeedItemRepository repository;
 
     @Test
-    public void shouldGetFeedItemWhenItExists() {
-        final FeedItem expResult = repository.save(new FeedItem("author1","title1", "link1", new Date()));
-
-        final FeedItem result = repository.findById(expResult.getId()).get();
-
-        Assertions.assertThat(result).isEqualTo(expResult);
-    }
-
-    @Test
-    public void shouldGetEmptyResultWhenFeedItemDoesNotExist() {
-        long wrongId = -1l;
-
-        Optional<FeedItem> result = repository.findById(wrongId);
-
-        Assertions.assertThat(result.isPresent()).isFalse();
-    }
-
-    @Test
     public void shouldCreateNewFeedItem() {
-        FeedItem newItem = new FeedItem("author1","title1", "link1", new Date());
+        FeedItem newItem = new FeedItem("author1", "title1", "link1", new Date());
         newItem.setDescription("description1");
         final FeedItem expResult = repository.save(newItem);
 
@@ -64,7 +43,7 @@ public class FeedItemJdbcRepositoryTest {
 
     @Test
     public void shouldCreateNewFeedItemIfDescriptionIsNull() {
-        final FeedItem expResult = repository.save(new FeedItem("author1","title1", "link1", new Date()));
+        final FeedItem expResult = repository.save(new FeedItem("author1", "title1", "link1", new Date()));
 
         final FeedItem result = repository.findById(expResult.getId()).get();
 
@@ -76,17 +55,10 @@ public class FeedItemJdbcRepositoryTest {
         Assertions.assertThat(result.getLink()).isEqualTo(expResult.getLink());
         Assertions.assertThat(result.getPubDate()).isEqualTo(expResult.getPubDate());
     }
-
+    
     @Test
-    public void shouldUpdateFeedItem() {
-        final FeedItem newItem = repository.findById(1l).get();
-
-        Assertions.assertThat(newItem.getAuthor()).isEqualTo("yerlan");
-        newItem.setAuthor("author1");
-
-        final FeedItem updated = repository.save(newItem);
-
-        Assertions.assertThat(updated.getAuthor()).isEqualTo("author1");
+    public void shouldNotCreateFeedItemIfEntityIsNull() {
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> repository.save(null));
     }
 
     @Test
@@ -127,5 +99,29 @@ public class FeedItemJdbcRepositoryTest {
         newItem.setLink("link1");
 
         Assertions.assertThatIllegalArgumentException().isThrownBy(() -> repository.save(newItem));
+    }
+
+    @Test
+    public void shouldUpdateFeedItem() {
+        final FeedItem newItem = repository.findById(2l).get();
+
+        Assertions.assertThat(newItem.getAuthor()).isEqualTo("yerlan");
+        newItem.setAuthor("author1");
+
+        final FeedItem updated = repository.save(newItem);
+
+        Assertions.assertThat(updated.getAuthor()).isEqualTo("author1");
+    }
+
+    @Test
+    public void shouldUpdateFeedItemDescription() {
+        final FeedItem newItem = repository.findById(3l).get();
+
+        Assertions.assertThat(newItem.getDescription()).isNull();
+        newItem.setDescription("desc1");
+
+        final FeedItem updated = repository.save(newItem);
+
+        Assertions.assertThat(updated.getDescription()).isEqualTo("desc1");
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Author:  yerlana
  * Created: Apr 30, 2019
- * Create data for test
+ * Init testing data
  */
 
 TRUNCATE TABLE feed_item; -- empty table

@@ -69,7 +69,7 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
     @Override
     public List<FeedItem> findLast(int numOfEntries) {
         if (numOfEntries == 0) {
-            LOGGER.info("numOfEntries = ZERO, call findAll()");
+            LOGGER.debug("numOfEntries = ZERO, call findAll()");
             return findAll();
         } else if (numOfEntries < 0) {
             throw new IllegalArgumentException("The given 'numOfEntries' must not be less than ZERO!");

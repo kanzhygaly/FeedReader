@@ -1,3 +1,6 @@
+/**
+ * Scheduled task for fetching RSS feeds
+ */
 package kz.ya.FeedReader.scheduler;
 
 import java.util.List;

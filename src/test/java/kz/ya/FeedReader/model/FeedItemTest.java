@@ -1,5 +1,5 @@
 /*
- * Unit Tests for FeedItem
+ * Unit Tests for FeedItem entity class
  */
 package kz.ya.FeedReader.model;
 
