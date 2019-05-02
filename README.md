@@ -49,7 +49,8 @@ Password:
 
 RSS Feed URL
 ```sh
-You can change it in application.properties file, property - rss.feed.url
+File "application.properties"
+Property "rss.feed.url"
 ```
 
 ## Endpoints
