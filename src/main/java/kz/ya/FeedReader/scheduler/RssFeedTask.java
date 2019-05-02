@@ -1,4 +1,4 @@
-/**
+/*
  * Scheduled task for fetching RSS feeds
  */
 package kz.ya.FeedReader.scheduler;
@@ -22,7 +22,8 @@ import org.springframework.stereotype.Component;
 public class RssFeedTask {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(RssFeedTask.class);
-    
+
+    // property from application.properties
     @Value("${rss.feed.url}")
     private String feedUrl;
     
@@ -41,8 +42,7 @@ public class RssFeedTask {
         LOGGER.info("Fetching from RSS Feed {}", feedUrl);
         List<FeedItem> items = feedExtractor.extractItems(feedUrl);
         LOGGER.info("Fetch result got {} items", items.size());
-        items.forEach((entry) -> {
-            repository.save(entry);
-        });
+
+        items.forEach(repository::save);
     }
 }
