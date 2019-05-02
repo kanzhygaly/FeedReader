@@ -40,10 +40,8 @@ Application starts on
 http://localhost:8080/
 ```
 
-H2 Console
+H2 Console http://localhost:8080/h2-console
 ```sh
-http://localhost:8080/h2-console
-
 JDBC URL: jdbc:h2:mem:feed
 User Name: sa
 Password:
