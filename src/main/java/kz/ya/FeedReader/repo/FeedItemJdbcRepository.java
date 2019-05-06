@@ -43,12 +43,24 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
                 .withTableName(TABLE_NAME).usingGeneratedKeyColumns("id");
     }
 
+    /**
+     * Returns the number of entities available.
+     * 
+     * @return The size of all entities in DB.
+     */
     @Override
     public long count() {
         String query = String.format("SELECT COUNT(*) FROM %s", TABLE_NAME);
         return jdbcTemplate.queryForObject(query, Long.class);
     }
 
+    /**
+     * Deletes the entity with the given id.
+     * 
+     * @param id Input param ID.
+     * @throws IllegalArgumentException If input param ID is null.
+     * @throws FeedItemNotFoundException If entity doesn't exist.
+     */
     @Override
     public void deleteById(Long id) {
         Assert.notNull(id, ID_MUST_NOT_BE_NULL);
@@ -60,12 +72,26 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         LOGGER.info("Rows deleted: " + rows);
     }
 
+    /**
+     * Returns all entities.
+     * 
+     * @return All entities from DB.
+     */
     @Override
     public List<FeedItem> findAll() {
         String query = String.format("SELECT * FROM %s", TABLE_NAME);
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(FeedItem.class));
     }
 
+    /**
+     * Returns last entities (the number of entities = numOfEntries)
+     * sorted by publication date in descending order.
+     * If numOfEntries == 0, then it will return all not sorted entities.
+     * 
+     * @param numOfEntries Input param 'The number of entries that is needed'.
+     * @throws IllegalArgumentException If input param is less than ZERO.
+     * @return A list of entities, according to input param.
+     */
     @Override
     public List<FeedItem> findLast(int numOfEntries) {
         if (numOfEntries == 0) {
@@ -79,6 +105,14 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(FeedItem.class));
     }
 
+    /**
+     * Retrieves an entity by its id.
+     * 
+     * @param id Input param ID.
+     * @throws IllegalArgumentException If input param ID is null.
+     * @return If found, An Optional describing the specified value;
+     *         Otherwise, An empty Optional instance
+     */
     @Override
     public Optional<FeedItem> findById(Long id) {
         Assert.notNull(id, ID_MUST_NOT_BE_NULL);
@@ -93,9 +127,18 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
             return Optional.empty();
         }
 
-        return Optional.of(result);
+        return Optional.ofNullable(result);
     }
 
+    /**
+     * Saves a given entity.
+     * If ID is null, it will create new one.
+     * Else, it will update the existent one.
+     * 
+     * @param entity Input param entity.
+     * @throws IllegalArgumentException If input param entity is null or its required variables are null.
+     * @return New or Updated entity.
+     */
     @Override
     public FeedItem save(FeedItem entity) {
         Assert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);
@@ -115,8 +158,10 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
 
             Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
             LOGGER.debug("New FeedItem: " + newId);
-
-            return findById((Long) newId).get();
+            
+            entity.setId(newId.longValue());
+            return entity;
+//            return findById((Long) newId).get();
         }
 
         // else UPDATE it
@@ -125,6 +170,7 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
                 entity.getAuthor(), entity.getTitle(), entity.getDescription(), entity.getLink(), entity.getPubDate(), entity.getId());
         LOGGER.info("Rows updated: " + rows);
 
-        return findById(entity.getId()).get();
+        return entity;
+//            return findById((Long) newId).get();
     }
 }

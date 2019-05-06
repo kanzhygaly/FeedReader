@@ -44,10 +44,11 @@ User Name: sa
 Password:
 ```
 
-Default RSS Feed URL
+Customizable variables of "application.properties"
 ```sh
-File "application.properties"
-Property "rss.feed.url"
+rss.feed.url - Default RSS Feed URL
+
+rss.feed.schedule.rate - RSS fetch task schedule rate
 ```
 
 ## Endpoints

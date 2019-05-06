@@ -3,6 +3,7 @@
  */
 package kz.ya.FeedReader.repo;
 
+import java.time.LocalDateTime;
 import kz.ya.FeedReader.model.FeedItem;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -10,8 +11,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Date;
 
 /**
  *
@@ -26,7 +25,7 @@ public class SaveFeedItemJdbcRepoTest {
 
     @Test
     public void shouldCreateNewFeedItem() {
-        FeedItem newItem = new FeedItem("author1", "title1", "link1", new Date());
+        FeedItem newItem = new FeedItem("author1", "title1", "link1", LocalDateTime.now());
         newItem.setDescription("description1");
         final FeedItem expResult = repository.save(newItem);
 
@@ -43,7 +42,7 @@ public class SaveFeedItemJdbcRepoTest {
 
     @Test
     public void shouldCreateNewFeedItemIfDescriptionIsNull() {
-        final FeedItem expResult = repository.save(new FeedItem("author1", "title1", "link1", new Date()));
+        final FeedItem expResult = repository.save(new FeedItem("author1", "title1", "link1", LocalDateTime.now()));
 
         final FeedItem result = repository.findById(expResult.getId()).get();
 
@@ -66,7 +65,7 @@ public class SaveFeedItemJdbcRepoTest {
         FeedItem newItem = new FeedItem();
         newItem.setTitle("title1");
         newItem.setLink("link1");
-        newItem.setPubDate(new Date());
+        newItem.setPubDate(LocalDateTime.now());
 
         Assertions.assertThatIllegalArgumentException().isThrownBy(() -> repository.save(newItem));
     }
@@ -76,7 +75,7 @@ public class SaveFeedItemJdbcRepoTest {
         FeedItem newItem = new FeedItem();
         newItem.setAuthor("author1");
         newItem.setLink("link1");
-        newItem.setPubDate(new Date());
+        newItem.setPubDate(LocalDateTime.now());
 
         Assertions.assertThatIllegalArgumentException().isThrownBy(() -> repository.save(newItem));
     }
@@ -86,7 +85,7 @@ public class SaveFeedItemJdbcRepoTest {
         FeedItem newItem = new FeedItem();
         newItem.setAuthor("author1");
         newItem.setTitle("title1");
-        newItem.setPubDate(new Date());
+        newItem.setPubDate(LocalDateTime.now());
 
         Assertions.assertThatIllegalArgumentException().isThrownBy(() -> repository.save(newItem));
     }

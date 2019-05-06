@@ -5,8 +5,8 @@ package kz.ya.FeedReader.scheduler;
 
 import java.util.List;
 import kz.ya.FeedReader.model.FeedItem;
-import kz.ya.FeedReader.repo.FeedItemRepository;
 import kz.ya.FeedReader.service.FeedExtractor;
+import kz.ya.FeedReader.service.FeedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +28,21 @@ public class RssFeedTask {
     private String feedUrl;
     
     private final FeedExtractor feedExtractor;
-    private final FeedItemRepository repository;
+    private final FeedService feedService;
 
     @Autowired
-    public RssFeedTask(FeedExtractor feedExtractor, FeedItemRepository repository) {
+    public RssFeedTask(FeedExtractor feedExtractor, FeedService feedService) {
         this.feedExtractor = feedExtractor;
-        this.repository = repository;
+        this.feedService = feedService;
     }
 
-    // Scheduled to be invoked every 180 sec
-    @Scheduled(fixedRate = 180000)
+    // Scheduled to be invoked every X sec
+    @Scheduled(fixedRateString = "${rss.feed.schedule.rate}")
     public void fetchRssFeed() {
         LOGGER.info("Fetching from RSS Feed {}", feedUrl);
         List<FeedItem> items = feedExtractor.extractItems(feedUrl);
         LOGGER.info("Fetch result got {} items", items.size());
 
-        items.forEach(repository::save);
+        feedService.saveAll(items);
     }
 }

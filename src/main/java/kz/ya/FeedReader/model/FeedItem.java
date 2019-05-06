@@ -3,7 +3,7 @@
  */
 package kz.ya.FeedReader.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -17,19 +17,19 @@ public class FeedItem {
     private String title;
     private String description;
     private String link;
-    private Date pubDate;
+    private LocalDateTime pubDate;
 
     public FeedItem() {
     }
 
-    public FeedItem(String author, String title, String link, Date pubDate) {
+    public FeedItem(String author, String title, String link, LocalDateTime pubDate) {
         this.author = author;
         this.title = title;
         this.link = link;
         this.pubDate = pubDate;
     }
 
-    public FeedItem(Long id, String author, String title, String link, Date pubDate) {
+    public FeedItem(Long id, String author, String title, String link, LocalDateTime pubDate) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -77,11 +77,11 @@ public class FeedItem {
         this.link = link;
     }
 
-    public Date getPubDate() {
+    public LocalDateTime getPubDate() {
         return pubDate;
     }
 
-    public void setPubDate(Date pubDate) {
+    public void setPubDate(LocalDateTime pubDate) {
         this.pubDate = pubDate;
     }
 

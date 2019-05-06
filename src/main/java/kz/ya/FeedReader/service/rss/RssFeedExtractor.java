@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.util.Assert;
@@ -44,8 +46,8 @@ public class RssFeedExtractor implements FeedExtractor {
         // fetch RSS feed by the given feedUrl
         SyndFeed syndFeed = restTemplate.execute(feedUrl, HttpMethod.GET, null, response -> {
             SyndFeedInput input = new SyndFeedInput();
-            try {
-                return input.build(new XmlReader(response.getBody()));
+            try (final XmlReader reader = new XmlReader(response.getBody())) {
+                return input.build(reader);
             } catch (FeedException e) {
                 throw new IOException("Could not parse response", e);
             }
@@ -59,7 +61,8 @@ public class RssFeedExtractor implements FeedExtractor {
 
         // populate the result list
         syndFeed.getEntries().forEach((entry) -> {
-            FeedItem item = new FeedItem(entry.getAuthor(), entry.getTitle(), entry.getLink(), entry.getPublishedDate());
+            LocalDateTime ldt = LocalDateTime.ofInstant(entry.getPublishedDate().toInstant(), ZoneId.systemDefault());
+            FeedItem item = new FeedItem(entry.getAuthor(), entry.getTitle(), entry.getLink(), ldt);
             item.setDescription(entry.getDescription().getValue());
             result.add(item);
         });
