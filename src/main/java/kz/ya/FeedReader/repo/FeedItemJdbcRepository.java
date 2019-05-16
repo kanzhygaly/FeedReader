@@ -161,7 +161,6 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
             
             entity.setId(newId.longValue());
             return entity;
-//            return findById((Long) newId).get();
         }
 
         // else UPDATE it
@@ -171,6 +170,5 @@ public class FeedItemJdbcRepository implements FeedItemRepository {
         LOGGER.info("Rows updated: " + rows);
 
         return entity;
-//            return findById((Long) newId).get();
     }
 }
